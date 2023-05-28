@@ -14,10 +14,7 @@ let jsonData = {
         "uptime": "00:00:00",
         "cpumodel": "",
         "cpuclk": "",
-        "cpuvendor": "",
-        "date": "--- -, ---",
-        "day": "------",
-        "time": "--:--:--"
+        "cpuvendor": ""
       }
     ],
     "GPU": [
@@ -91,11 +88,12 @@ process.on('message',  (message) => {
     si.mem().then(data => {
       let a = 0.0;
       let b = 0.0;
-      //a = Math.floor(Math.floor(data.total/1000000000)/4.0) * 4 //Round DOWN to nearest multiple of 4 GB ;)
+      //Round DOWN to nearest multiple of 4 GB ;)
       a = roundDown(data.total);
       b = roundDown(data.used);
       m.RAM[0].total = a;
       m.RAM[0].used = b;
+      //RAM Percent used/total
       m.RAM[0].load = (b/a)*100;
     });
 
