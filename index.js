@@ -6,7 +6,8 @@ const { Server } = require("socket.io");
 const {fork} = require("child_process")
 const io = new Server(server, {
   cors: {
-    origin: "chrome-extension://ophmdkgfcjapomjdpfobjfbihojchbko",
+    //origin: "chrome-extension://ophmdkgfcjapomjdpfobjfbihojchbko",
+    origin: "*",
     methods: ["GET", "POST"]
   }
 });
@@ -16,6 +17,7 @@ let port = process.env.PORT || 3000;
 
 io.on('connection', (socket) => {
   console.log("Connection");
+  updateWorker.send([]);
 
   socket.on('update', () => {
     updateWorker.send([]);
@@ -32,7 +34,8 @@ io.on('connection', (socket) => {
     console.log('- physical cores: ' + data.physicalCores);
     console.log('...');*/
     //console.log(data.OS[0].cpuvendor)
-    socket.emit(JSON.stringify(data.OS[0]))
+    let a = JSON.stringify(data.RAM[0].clk);
+    socket.emit(a)
 })
 
 
