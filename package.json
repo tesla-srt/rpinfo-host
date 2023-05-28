@@ -1,5 +1,6 @@
 {
     "name": "rPiNFO-host",
+    "author": "Nicholas Delfico",
     "version": "0.1.0",
     "private": false,
     "scripts": {
