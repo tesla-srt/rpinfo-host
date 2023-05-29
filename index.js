@@ -4,49 +4,100 @@ const app = express();
 const http = require('http');
 const server = http.createServer(app);
 const { Server } = require("socket.io");
-const { fork, execSync } = require("child_process");
-const { resolve } = require("path");
+const { fork } = require("child_process");
 const io = new Server(server, {
   cors: {
-    //origin: "chrome-extension://ophmdkgfcjapomjdpfobjfbihojchbko",
     origin: "*",
     methods: ["GET", "POST"]
   }
 });
+const v = 0;
 const updateWorker = fork('./update.js');
-const cmd0 = 'taskkill /f /im eggplant.exe';
-
 let port = process.env.PORT || 3000;
-
 const trayIcon = new QIcon("img/icon.png");
 const tray = new QSystemTrayIcon();
+var jsonData = {
+  "CPU": [
+    {
+      "temp": "00",
+      "load": "00",
+      "clk": "00"
+    }
+  ],
+  "OS": [
+    {
+      "user": "",
+      "uptime": "00:00:00",
+      "cpumodel": "",
+      "cpuclk": "",
+      "cpuvendor": ""
+    }
+  ],
+  "GPU": [
+    {
+      "vendor": "Geforce",
+      "model": "RTX",
+      "class": "3090",
+      "temp": "00",
+      "load": "00",
+      "clk": "00"
+    }
+  ],
+  "RAM": [
+    {
+      "used": "00",
+      "total": "",
+      "load": "00",
+      "clk": "00"
+    },
+    {
+      "used": "00",
+      "total": "32",
+      "load": "00",
+      "clk": "00"
+    }
+  ],
+  "HDD": [
+    {
+      "fs": "C:",
+      "used": "0.00",
+      "size": "0.00"
+    },
+    {
+      "fs": "D:",
+      "used": "0.00",
+      "size": "0.00"
+    },
+    {
+      "fs": "G:",
+      "used": "0.00",
+      "size": "0.00"
+    }
+  ],
+  "IO": [{
+    "read": "",
+    "write": ""
+  },
+{
+  "read": "",
+  "write": ""
+}]
+}
 tray.setIcon(trayIcon);
 tray.show();
-
-global.tray = tray; // prevents garbage collection of tray
+global.tray = tray;
 tray.addEventListener('activated', terminate);
-
-
-function terminate() {
-  tray.delete();
-  global.tray = null;
-  updateWorker.kill();
-  process.exit(1);
-}
-
-
 
 io.on('connection', (socket) => {
   console.log("Connection");
-  updateWorker.send([]);
+  updateWorker.send(jsonData);
 
   socket.on('update', () => {
-    updateWorker.send([]);
+    updateWorker.send(jsonData);
   })
 
 
   updateWorker.on('message', (data) => {
-    //let a = JSON.stringify(data.RAM[0].clk);
     socket.emit('sysinfo', data);
   })
 });
@@ -55,5 +106,10 @@ server.listen(port, () => {
   console.log('[INFO] Listening on *:' + port);
 });
 
-
-
+//Terminate
+function terminate() {
+  tray.delete();
+  global.tray = null;
+  updateWorker.kill();
+  process.exit(1);
+}

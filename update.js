@@ -1,74 +1,8 @@
 const si = require('systeminformation')
 var a = "";
-let jsonData = {
-    "CPU": [
-      {
-        "temp": "00",
-        "load": "00",
-        "clk": "00"
-      }
-    ],
-    "OS": [
-      {
-        "user": "",
-        "uptime": "00:00:00",
-        "cpumodel": "",
-        "cpuclk": "",
-        "cpuvendor": ""
-      }
-    ],
-    "GPU": [
-      {
-        "vendor": "Geforce",
-        "model": "RTX",
-        "class": "3090",
-        "temp": "00",
-        "load": "00",
-        "clk": "00"
-      }
-    ],
-    "RAM": [
-      {
-        "used": "00",
-        "total": "",
-        "load": "00",
-        "clk": "00"
-      },
-      {
-        "used": "00",
-        "total": "32",
-        "load": "00",
-        "clk": "00"
-      }
-    ],
-    "HDD": [
-      {
-        "fs": "C:",
-        "used": "0.00",
-        "size": "0.00"
-      },
-      {
-        "fs": "D:",
-        "used": "0.00",
-        "size": "0.00"
-      },
-      {
-        "fs": "G:",
-        "used": "0.00",
-        "size": "0.00"
-      }
-    ],
-    "IO": [{
-      "read": "",
-      "write": ""
-    },
-  {
-    "read": "",
-    "write": ""
-  }]
-}
-process.on('message',  (message) => {
-       let m = (jsonData);
+
+process.on('message',  (msg) => {
+       let m = (msg);
     
     //User   
     si.users(function(data) {
