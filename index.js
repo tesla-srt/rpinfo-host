@@ -11,7 +11,6 @@ const io = new Server(server, {
     methods: ["GET", "POST"]
   }
 });
-const si = require('systeminformation');
 const updateWorker = fork('./update.js');
 let port = process.env.PORT || 3000;
 const trayIcon = new QIcon("img/icon.png");
@@ -90,10 +89,10 @@ tray.addEventListener('activated', terminate);
 
 io.on('connection', (socket) => {
   //console.log("Connection");
-  updateWorker.send(jsonData, si);
+  updateWorker.send(jsonData);
 
   socket.on('update', () => {
-    updateWorker.send(jsonData, si);
+    updateWorker.send(jsonData);
   })
 
 
