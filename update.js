@@ -19,6 +19,9 @@ let jsonData = {
     ],
     "GPU": [
       {
+        "vendor": "Geforce",
+        "model": "RTX",
+        "class": "3090",
         "temp": "00",
         "load": "00",
         "clk": "00"
@@ -40,22 +43,30 @@ let jsonData = {
     ],
     "HDD": [
       {
-        "letter": "C:",
+        "fs": "C:",
         "used": "0.00",
-        "total": "0.00"
+        "size": "0.00"
       },
       {
-        "letter": "D:",
+        "fs": "D:",
         "used": "0.00",
-        "total": "0.00"
+        "size": "0.00"
       },
       {
-        "letter": "G:",
+        "fs": "G:",
         "used": "0.00",
-        "total": "0.00"
+        "size": "0.00"
       }
-    ]
-  }
+    ],
+    "IO": [{
+      "read": "",
+      "write": ""
+    },
+  {
+    "read": "",
+    "write": ""
+  }]
+}
 process.on('message',  (message) => {
        let m = (jsonData);
     
@@ -97,12 +108,57 @@ process.on('message',  (message) => {
       m.RAM[0].load = (b/a)*100;
     });
 
+    //RAM Clk
     si.memLayout().then(data => {
       m.RAM[0].clk = data[0].clockSpeed;
     });
 
+    //GPU
+    si.graphics().then(data => {
+      let a = data.controllers[0]
+      //Temp
+      let t = a.temperatureGpu
+      //Load
+      let u = a.utilizationGpu
+      //Clk
+      let c = a.clockCore
+      //Model
+      let n = a.name.split(' ');
+      //n = n[1] + " " + n[2] + " " + n[3]
 
+      m.GPU[0].clk = c
+      m.GPU[0].temp = t
+      m.GPU[0].load = u
+      m.GPU[0].vendor = n[1] //i.e GeForce
+      m.GPU[0].model = n[2] //i.e. RTX
+      m.GPU[0].class = n[3] //i.e. 3070, 3080, 3090
+
+      
+    });
+
+
+    //Filesystem Info
+    si.fsSize().then(data => {
+      m.HDD = (data)
+      m.HDD.forEach(element => {
+        element.size = roundDown(element.size)
+        element.used = roundDown(element.used)
+        element.available = roundDown(element.available)
+      });
+    });
+
+    //IO
+    
+    //NET
+    setInterval(function() {
+      si.networkStats().then(data => {
+        console.log(data);
+      })
+    }, 1000)
+
+    //console.log(m.IO);
     process.send(m);
+
 
 });
 

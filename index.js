@@ -3,7 +3,7 @@ const app = express();
 const http = require('http');
 const server = http.createServer(app);
 const { Server } = require("socket.io");
-const {fork} = require("child_process")
+const { fork, execSync } = require("child_process")
 const io = new Server(server, {
   cors: {
     //origin: "chrome-extension://ophmdkgfcjapomjdpfobjfbihojchbko",
@@ -12,8 +12,35 @@ const io = new Server(server, {
   }
 });
 const updateWorker = fork('./update.js');
+const cmd0 = 'taskkill /f /im app.exe';
 
 let port = process.env.PORT || 3000;
+
+var gui = require('nw.gui');
+// Create a tray icon
+let tray = new gui.Tray({
+  title: 'HWMon',
+  tooltip: 'Nick\'s HW Monitoring App!',
+  icon: 'img/icon.png'
+});
+tray.on('click', function() {
+  //App.closeAllWindows();
+  //App.quit();
+  terminate();
+});
+
+function terminate() {
+  tray.remove();
+  tray = null;
+  updateWorker.kill()
+  execSync(cmd0);
+  //gui.App.closeAllWindows();
+  //gui.App.quit();
+  //gui.process.exit(1);
+  //process.exit(1);
+}
+
+
 
 io.on('connection', (socket) => {
   console.log("Connection");
@@ -25,19 +52,9 @@ io.on('connection', (socket) => {
 
 
   updateWorker.on('message', (data) => {
-    //config = message[1]
-   /* console.log('CPU Information:');
-    console.log('- manufacturer: ' + data.manufacturer);
-    console.log('- brand: ' + data.brand);
-    console.log('- speed: ' + data.speed);
-    console.log('- cores: ' + data.cores);
-    console.log('- physical cores: ' + data.physicalCores);
-    console.log('...');*/
-    //console.log(data.OS[0].cpuvendor)
-    let a = JSON.stringify(data.RAM[0].clk);
-    socket.emit(a)
+    //let a = JSON.stringify(data.RAM[0].clk);
+    socket.emit('sysinfo', data);
 })
-
 
   socket.emit('ding');
 

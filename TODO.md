@@ -8,9 +8,10 @@
 | yellow | #d4dcb2ff |
 | red | #5f2719ff |
 
-* CPU Object
+* ~~CPU Object~~
 * GPU Object
-+ OS Object
-+ RAM Object
-* HDD Object
++ ~~OS Object~~
++ ~~RAM Object~~
+* ~~HDD Object~~
+* IO (R/W Speeds)
 
