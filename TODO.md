@@ -9,9 +9,10 @@
 | red | #5f2719ff |
 
 * ~~CPU Object~~
-* GPU Object
+* ~~GPU Object~~
 + ~~OS Object~~
 + ~~RAM Object~~
 * ~~HDD Object~~
 * IO (R/W Speeds)
+* NET Object
 

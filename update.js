@@ -150,11 +150,11 @@ process.on('message',  (message) => {
     //IO
     
     //NET
-    setInterval(function() {
+    //setInterval(function() {
       si.networkStats().then(data => {
         console.log(data);
       })
-    }, 1000)
+    //}, 1000)
 
     //console.log(m.IO);
     process.send(m);
