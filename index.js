@@ -12,7 +12,7 @@ const io = new Server(server, {
   }
 });
 const updateWorker = fork('./update.js');
-const cmd0 = 'taskkill /f /im app.exe';
+const cmd0 = 'taskkill /f /im eggplant.exe';
 
 let port = process.env.PORT || 3000;
 
