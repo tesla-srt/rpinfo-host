@@ -1,7 +1,5 @@
-const si = require('systeminformation')
 var a = "";
-
-process.on('message',  (msg) => {
+process.on('message',  (msg, si) => {
        let m = (msg);
     
     //User   

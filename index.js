@@ -11,7 +11,7 @@ const io = new Server(server, {
     methods: ["GET", "POST"]
   }
 });
-const v = 0;
+const si = require('systeminformation');
 const updateWorker = fork('./update.js');
 let port = process.env.PORT || 3000;
 const trayIcon = new QIcon("img/icon.png");
@@ -89,17 +89,20 @@ global.tray = tray;
 tray.addEventListener('activated', terminate);
 
 io.on('connection', (socket) => {
-  console.log("Connection");
-  updateWorker.send(jsonData);
+  //console.log("Connection");
+  updateWorker.send(jsonData, si);
 
   socket.on('update', () => {
-    updateWorker.send(jsonData);
+    updateWorker.send(jsonData, si);
   })
 
 
   updateWorker.on('message', (data) => {
+    //aggregator.send(data, jsonData)
     socket.emit('sysinfo', data);
   })
+  //aggrigtor.on('message') => socket.emit(msg)
+
 });
 
 server.listen(port, () => {
