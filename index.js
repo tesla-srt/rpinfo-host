@@ -5,108 +5,104 @@ const http = require('http');
 const server = http.createServer(app);
 const { Server } = require("socket.io");
 const { fork } = require("child_process");
+const cp = require('node:child_process');
+const updateWorker = cp.fork(`${__dirname}/update.js`);
+const aggregateWorker = cp.fork(`${__dirname}/aggregator.js`);
 const io = new Server(server, {
   cors: {
     origin: "*",
     methods: ["GET", "POST"]
   }
 });
-const updateWorker = fork('./update.js');
 let port = process.env.PORT || 3000;
 const trayIcon = new QIcon("img/icon.png");
 const tray = new QSystemTrayIcon();
+tray.setIcon(trayIcon);
+tray.show();
+global.tray = tray;
+tray.addEventListener('activated', terminate);
+
 var jsonData = {
-  "CPU": [
+  "CPU":
     {
       "temp": "00",
       "load": "00",
       "clk": "00"
-    }
-  ],
-  "OS": [
+    },
+  "OS":
     {
       "user": "",
       "uptime": "00:00:00",
       "cpumodel": "",
       "cpuclk": "",
       "cpuvendor": ""
-    }
-  ],
-  "GPU": [
+    },
+  "GPU": 
     {
-      "vendor": "Geforce",
-      "model": "RTX",
-      "class": "3090",
+      "vendor": "",
+      "model": "",
+      "class": "",
       "temp": "00",
       "load": "00",
       "clk": "00"
     }
-  ],
-  "RAM": [
+  ,
+  "RAM": 
     {
       "used": "00",
       "total": "",
       "load": "00",
       "clk": "00"
     },
-    {
-      "used": "00",
-      "total": "32",
-      "load": "00",
-      "clk": "00"
-    }
-  ],
-  "HDD": [
-    {
-      "fs": "C:",
-      "used": "0.00",
-      "size": "0.00"
-    },
-    {
-      "fs": "D:",
-      "used": "0.00",
-      "size": "0.00"
-    },
-    {
-      "fs": "G:",
-      "used": "0.00",
-      "size": "0.00"
-    }
-  ],
+  "HDD": [],
   "IO": [{
     "read": "",
     "write": ""
   },
-{
-  "read": "",
-  "write": ""
-}]
+  {
+    "read": "",
+    "write": ""
+  }
+],
+  "NET": 
+    {
+      "iface": "name",
+      "rx_bytes": 0,
+      "tx_bytes": 0,
+      "rx_sec": 0,
+      "tx_sec": 0,
+      "ms": 0
+    }
 }
-tray.setIcon(trayIcon);
-tray.show();
-global.tray = tray;
-tray.addEventListener('activated', terminate);
+jsonData.date = 0
 
+const valueObject = {
+  cpu: 'manufacturer, brand, speedMax',
+  users: '*',
+  memLayout: 'clockSpeed',
+  mem: 'total, used',
+  graphics: 'controllers',
+  fsSize: 'size, used, available',
+  networkStats: 'rx_bytes, tx_bytes, ms',
+  time: 'uptime',
+  currentLoad: 'currentLoad'
+}
+
+let r = {}
 io.on('connection', (socket) => {
-  //console.log("Connection");
-  updateWorker.send(jsonData);
-
   socket.on('update', () => {
     updateWorker.send(jsonData);
+    socket.emit('sysinfo', jsonData)
   })
-
-
-  updateWorker.on('message', (data) => {
-    //aggregator.send(data, jsonData)
-    socket.emit('sysinfo', data);
+  aggregateWorker.on('message', data => {
+    jsonData = data;
   })
-  //aggrigtor.on('message') => socket.emit(msg)
-
 });
-
-server.listen(port, () => {
-  console.log('[INFO] Listening on *:' + port);
-});
+updateWorker.on('message', data => {
+  r = {'prev': jsonData, 'data': data}
+  aggregateWorker.send(r)
+})
+server.listen(port);
 
 //Terminate
 function terminate() {
