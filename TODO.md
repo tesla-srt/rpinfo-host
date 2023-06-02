@@ -40,7 +40,7 @@ DOTMATRIX OVERLAY
     background-image: url(images/dotmatrix.png);
     overflow-x: hidden;
     transition: 0.5s;
-    opacity: .66;
+    opacity: .66; //We can animte this :)
 }
 ```
 
