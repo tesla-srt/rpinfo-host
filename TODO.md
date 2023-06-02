@@ -21,9 +21,11 @@
 
 
 Refactor logic for better performance
---- Make a single call to si.get(valueobject)
---- Define valuObject
+~~+Make a single call to si.get(valueobject)~~
+~~+Define valuObject~~
 
+FOR Frontend
+-----------------------
 
 DOTMATRIX OVERLAY
 -------------
