@@ -1,8 +1,4 @@
-```
----- B / 1000000000 = GB   
-```
-
-
+# TODO
 * ~~CPU Object~~
 * ~~GPU Object~~
 + ~~OS Object~~
@@ -12,12 +8,17 @@
 * ~~NET Object~~
 + r/w per sec >.<
 + tx_sec, rx_sec
-+ 
++ Refactor logic for better performance
++ ~~+Make a single call to si.get(valueobject)~~
++ ~~+Define valuObject~~
+
+### Notes
+-----------------------
+```
+---- B / 1000000000 = GB   
+```
 
 
-Refactor logic for better performance
-~~+Make a single call to si.get(valueobject)~~
-~~+Define valuObject~~
 
 # FOR Frontend
 -----------------------
