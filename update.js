@@ -6,7 +6,6 @@ const valueObject = {
   mem: 'total',
   graphics: 'controllers'
 }
-
 const dValueObject = {
   cpu: 'speed',
   mem: 'used',
@@ -16,6 +15,7 @@ const dValueObject = {
   time: 'uptime',
   currentLoad: 'currentLoad'
 }
+let result = {}
 //Static data - No need to update
 let a, b, c, d, e, f, g
 si.get(valueObject)
@@ -30,20 +30,24 @@ si.get(valueObject)
     })
 
 process.on('message',  (pewp) => {
-    let result = (pewp);
+    result = (pewp);
     si.get(dValueObject)
     .then(newData => {
+      if (result.firstrun) {
       result.OS.user = a
       result.OS.cpuclk = b
       result.OS.cpumodel = c
       result.OS.cpuvendor = d
+      result.RAM.clk = g
+      result.GPU.name = f
+      result.RAM.total = e
+      }
       result.OS.uptime = newData.time.uptime
       result.CPU.clk = newData.cpu.speed
       result.CPU.load = newData.currentLoad.currentLoad
-      result.RAM.total = e
+
       result.RAM.used = newData.mem.used
-      result.RAM.clk = g
-      result.GPU.name = f
+
       result.GPU.clk = newData.graphics.controllers[0].clockCore
       result.GPU.temp = newData.graphics.controllers[0].temperatureGpu
       result.GPU.load = newData.graphics.controllers[0].utilizationGpu
@@ -51,5 +55,5 @@ process.on('message',  (pewp) => {
       result.NET.rx_bytes = newData.networkStats[0].rx_bytes
       result.NET.tx_bytes = newData.networkStats[0].tx_bytes
       process.send(result)
-  })
+    });
 });

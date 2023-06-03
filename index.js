@@ -70,6 +70,7 @@ var jsonData = {
     }
 }
 jsonData.date = 0
+jsonData.firstrun = true;
 
 const valueObject = {
   cpu: 'manufacturer, brand, speedMax',
@@ -83,6 +84,7 @@ const valueObject = {
   currentLoad: 'currentLoad'
 }
 let tray = null
+
 app.once('ready', () => {
 
   // Create a new tray
@@ -90,11 +92,11 @@ app.once('ready', () => {
   tray.on('click', function (event) {
     terminate()
   })
+  updateWorker.send(jsonData);
 })
 
 let r = {}
 io.on('connection', (socket) => {
-  updateWorker.send(jsonData);
   socket.on('update', () => {
     updateWorker.send(jsonData);
     socket.emit('sysinfo', jsonData)

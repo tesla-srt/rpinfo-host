@@ -16,6 +16,7 @@ process.on('message',  (msg) => {
     result.GPU.model = n[2] //i.e. RTX
     result.GPU.class = n[3] //i.e. 3070, 3080, 3090
 
+
     //Round DOWN to nearest multiple of 4 GB ;)
     result.RAM.total = roundDown(msg.data.RAM.total);
     result.RAM.used = roundDown(msg.data.RAM.used);
@@ -29,6 +30,7 @@ process.on('message',  (msg) => {
 
       let x = Date.now() - result.date
       result.date = x
+      result.firstrun = false;
       //result.NET.rx_sec = (result.NET.rx_bytes - msg.prev.NET.rx_bytes) / (x / 1000)
       //result.date = Date.now();
       //result.NET.tx_sec = (result.NET.tx_bytes - msg.prev.NET.tx_bytes) >= 0 ? (result.NET.tx_bytes - msg.prev.NET.tx_bytes) / (x / 1000) : 0
