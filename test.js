@@ -16,7 +16,7 @@ const valueObject = {
 si.get(valueObject).then(data => {
     //updateWorker.send(data)
     let z = Number.parseFloat(data.currentLoad.currentLoad).toFixed(1)
-    console.log(z)
+    console.log(data.graphics)
 })
 
   var result = {

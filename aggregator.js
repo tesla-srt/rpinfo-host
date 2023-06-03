@@ -11,12 +11,10 @@ process.on('message',  (msg) => {
     result.CPU.clk *= 1000;
     result.OS.cpuclk *= 1000;
     result.CPU.load = Number.parseInt(result.CPU.load)
-    console.log(result.CPU.load)
     let n = msg.data.GPU.name.split(' ')
     result.GPU.vendor = n[1] //i.e GeForce
     result.GPU.model = n[2] //i.e. RTX
     result.GPU.class = n[3] //i.e. 3070, 3080, 3090
-
 
     //Round DOWN to nearest multiple of 4 GB ;)
     result.RAM.total = roundDown(msg.data.RAM.total);

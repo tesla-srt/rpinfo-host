@@ -1,8 +1,8 @@
-const { QSystemTrayIcon, QIcon } = require ('@nodegui/nodegui');
+const { app, Tray } = require('electron')
 const express = require('express');
-const app = express();
+const main = express();
 const http = require('http');
-const server = http.createServer(app);
+const server = http.createServer(main);
 const { Server } = require("socket.io");
 const { fork } = require("child_process");
 const cp = require('node:child_process');
@@ -15,12 +15,7 @@ const io = new Server(server, {
   }
 });
 let port = process.env.PORT || 3000;
-const trayIcon = new QIcon("img/icon.png");
-const tray = new QSystemTrayIcon();
-tray.setIcon(trayIcon);
-tray.show();
-global.tray = tray;
-tray.addEventListener('activated', terminate);
+
 
 var jsonData = {
   "CPU":
@@ -87,9 +82,19 @@ const valueObject = {
   time: 'uptime',
   currentLoad: 'currentLoad'
 }
+let tray = null
+app.once('ready', () => {
+
+  // Create a new tray
+  tray = new Tray(`${__dirname}/img/icon.png`)
+  tray.on('click', function (event) {
+    terminate()
+  })
+})
 
 let r = {}
 io.on('connection', (socket) => {
+  updateWorker.send(jsonData);
   socket.on('update', () => {
     updateWorker.send(jsonData);
     socket.emit('sysinfo', jsonData)
@@ -106,8 +111,9 @@ server.listen(port);
 
 //Terminate
 function terminate() {
-  tray.delete();
-  global.tray = null;
+  tray.destroy();
+  tray = null;
   updateWorker.kill();
+  aggregateWorker.kill();
   process.exit(1);
 }
