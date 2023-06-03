@@ -4,7 +4,6 @@ const main = express();
 const http = require('http');
 const server = http.createServer(main);
 const { Server } = require("socket.io");
-const { fork } = require("child_process");
 const cp = require('node:child_process');
 const updateWorker = cp.fork(`${__dirname}/update.js`);
 const aggregateWorker = cp.fork(`${__dirname}/aggregator.js`);
@@ -44,9 +43,8 @@ var jsonData = {
   ,
   "RAM": 
     {
-      "used": "00",
+      "used": "",
       "total": "",
-      "load": "00",
       "clk": "00"
     },
   "HDD": [],

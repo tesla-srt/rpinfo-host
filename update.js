@@ -1,9 +1,7 @@
 const si = require('systeminformation');
+const p = require('node:os'); 
 const valueObject = {
-  cpu: 'manufacturer, brand, speedMax',
-  users: '*',
   memLayout: 'clockSpeed',
-  mem: 'total',
   graphics: 'controllers'
 }
 const dValueObject = {
@@ -12,19 +10,18 @@ const dValueObject = {
   graphics: 'controllers',
   fsSize: 'used, available, size',
   networkStats: 'rx_bytes, tx_bytes',
-  time: 'uptime',
   currentLoad: 'currentLoad'
 }
 let result = {}
 //Static data - No need to update
-let a, b, c, d, e, f, g
+let a, b, c, e, f, g, h
+h = p.cpus()
 si.get(valueObject)
     .then(newData => {
-      a = newData.users[0].user
-      b = newData.cpu.speedMax
-      c = newData.cpu.brand
-      d = newData.cpu.manufacturer
-      e = newData.mem.total
+      a = p.userInfo().username
+      b = h[0].speed
+      c = h[0].model
+      e = p.totalmem()
       f = newData.graphics.controllers[0].name
       g = newData.memLayout[0].clockSpeed
     })
@@ -34,18 +31,15 @@ process.on('message',  (pewp) => {
     si.get(dValueObject)
     .then(newData => {
       if (result.firstrun) {
-      result.OS.user = a
-      result.OS.cpuclk = b
-      result.OS.cpumodel = c
-      result.OS.cpuvendor = d
-      result.RAM.clk = g
-      result.GPU.name = f
-      result.RAM.total = e
+        result.OS.user = a
+        result.OS.cpumodel = c
+        result.RAM.clk = g
+        result.GPU.name = f
+        result.RAM.total = e
       }
-      result.OS.uptime = newData.time.uptime
+      result.OS.uptime = p.uptime()
       result.CPU.clk = newData.cpu.speed
       result.CPU.load = newData.currentLoad.currentLoad
-
       result.RAM.used = newData.mem.used
 
       result.GPU.clk = newData.graphics.controllers[0].clockCore

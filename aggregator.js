@@ -7,7 +7,7 @@
  */
 process.on('message',  (msg) => {
     let result = msg.data
-    result.OS.cpumodel = msg.data.OS.cpumodel.split(" ", 3).toString().replaceAll(",", " ")
+    result.OS.cpumodel = msg.data.OS.cpumodel.split(" ", 4).toString().replaceAll(",", " ")
     result.CPU.clk *= 1000;
     result.OS.cpuclk *= 1000;
     result.CPU.load = Number.parseInt(result.CPU.load)
@@ -18,7 +18,7 @@ process.on('message',  (msg) => {
 
 
     //Round DOWN to nearest multiple of 4 GB ;)
-    result.RAM.total = roundDown(msg.data.RAM.total);
+    result.RAM.total = result.firstrun ? roundDown(msg.data.RAM.total) : result.RAM.total;
     result.RAM.used = roundDown(msg.data.RAM.used);
 
     //may move this to client side
