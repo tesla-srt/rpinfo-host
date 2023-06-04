@@ -1,7 +1,7 @@
 {
   "name": "eggplant",
   "author": "Nicholas Delfico",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "show electron web site in tray",
   "private": false,
   "main": "index.min.js",

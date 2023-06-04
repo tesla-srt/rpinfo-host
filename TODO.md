@@ -6,7 +6,7 @@
 * ~~HDD Object~~
 * IO (R/W Speeds)
 * ~~NET Object~~
-+ r/w per sec >.<
++ ~~r/w per sec >.<~~
 + tx_sec, rx_sec
 + Refactor logic for better performance
 + ~~+Make a single call to si.get(valueobject)~~

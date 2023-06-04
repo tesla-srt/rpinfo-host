@@ -73,7 +73,7 @@ let tray = null
 app.once('ready', () => {
   // Create a new tray
   tray = new Tray(`${__dirname}/img/icon.png`)
-  tray.on('click', function (event) {
+  tray.on('double-click', function (event) {
     terminate()
   })
   updateWorker.send(jsonData)
@@ -101,5 +101,6 @@ function terminate() {
   tray = null
   updateWorker.kill()
   aggregateWorker.kill()
+  app.quit()
   process.exit(1)
 }

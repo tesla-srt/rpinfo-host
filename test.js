@@ -1,7 +1,10 @@
 const { fork } = require("child_process");
+const p = require('node:fs')
+
 //const updateWorker = fork('./update.js');
 
 var si = require('systeminformation');
+
 const valueObject = {
     cpu: 'manufacturer, brand, speedMax',
     users: '*',
@@ -13,11 +16,13 @@ const valueObject = {
     time: 'uptime',
     currentLoad: 'currentLoad'
   }
-si.get(valueObject).then(data => {
+
+
+/*si.get(valueObject).then(data => {
     //updateWorker.send(data)
     let z = Number.parseFloat(data.currentLoad.currentLoad).toFixed(1)
     console.log(data.graphics)
-})
+}) */
 
   var result = {
     "CPU":

@@ -2,7 +2,6 @@ const si = require('systeminformation')
 const p = require('node:os')
 const valueObject = {
   memLayout: 'clockSpeed',
-  graphics: 'controllers'
 }
 const dValueObject = {
   cpu: 'speed',
@@ -22,7 +21,6 @@ c = h[0].model
 
 si.get(valueObject)
     .then(newData => {
-      f = newData.graphics.controllers[0].name
       g = newData.memLayout[0].clockSpeed
     })
 
@@ -34,6 +32,7 @@ process.on('message',  (pewp) => {
         result.OS.user = a
         result.OS.cpumodel = c
         result.RAM.clk = g
+        f = newData.graphics.controllers[0].name
         result.GPU.name = f
         result.RAM.totalU = e
       }
