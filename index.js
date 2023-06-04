@@ -89,8 +89,8 @@ io.on('connection', (socket) => {
     jsonData = data
   })
 })
-updateWorker.on('message', data => {
-  r = {'prev': jsonData, 'data': data}
+updateWorker.on('message', thedata => {
+  r = {'prev': jsonData, 'data': thedata}
   aggregateWorker.send(r)
 })
 server.listen(port)
