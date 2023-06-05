@@ -74,7 +74,12 @@ app.once('ready', () => {
   // Create a new tray
   tray = new Tray(`${__dirname}/img/icon.png`)
   tray.on('double-click', function (event) {
-    terminate()
+    tray.destroy()
+    tray = null
+    updateWorker.kill()
+    aggregateWorker.kill()
+    app.quit()
+    process.exit(1)
   })
   updateWorker.send(jsonData)
 })
@@ -94,13 +99,3 @@ updateWorker.on('message', thedata => {
   aggregateWorker.send(r)
 })
 server.listen(port)
-
-//Terminate
-function terminate() {
-  tray.destroy()
-  tray = null
-  updateWorker.kill()
-  aggregateWorker.kill()
-  app.quit()
-  process.exit(1)
-}
